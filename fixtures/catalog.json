@@ -1,0 +1,613 @@
+{
+  "schemaVersion": "1.0.0",
+  "synthetic": true,
+  "siteId": "DEMO-PLANT-01",
+  "assets": [
+    {
+      "id": "EQ-UT-00142",
+      "name": "Chilled water pump A",
+      "kind": "pump"
+    },
+    {
+      "id": "EQ-UT-00143",
+      "name": "Chilled water pump B",
+      "kind": "pump"
+    },
+    {
+      "id": "EQ-UT-00144",
+      "name": "Chilled water pump C",
+      "kind": "pump"
+    },
+    {
+      "id": "EQ-CH-00201",
+      "name": "Chiller unit A",
+      "kind": "chiller"
+    },
+    {
+      "id": "EQ-CH-00202",
+      "name": "Chiller unit B",
+      "kind": "chiller"
+    },
+    {
+      "id": "EQ-AH-00301",
+      "name": "Air handling unit A",
+      "kind": "ahu"
+    },
+    {
+      "id": "EQ-AH-00302",
+      "name": "Air handling unit B",
+      "kind": "ahu"
+    },
+    {
+      "id": "EQ-TK-00401",
+      "name": "Buffer tank",
+      "kind": "tank"
+    }
+  ],
+  "drawings": [
+    {
+      "id": "UT-PID-0101",
+      "revision": "C",
+      "assetIds": [
+        "EQ-CH-00201",
+        "EQ-CH-00202",
+        "EQ-TK-00401"
+      ]
+    },
+    {
+      "id": "UT-PID-0102",
+      "revision": "C",
+      "assetIds": [
+        "EQ-UT-00142",
+        "EQ-UT-00143",
+        "EQ-UT-00144"
+      ]
+    },
+    {
+      "id": "UT-PID-0103",
+      "revision": "B",
+      "assetIds": [
+        "EQ-AH-00301",
+        "EQ-AH-00302"
+      ]
+    },
+    {
+      "id": "UT-GA-0201",
+      "revision": "A",
+      "assetIds": [
+        "EQ-CH-00201",
+        "EQ-CH-00202",
+        "EQ-TK-00401",
+        "EQ-UT-00142",
+        "EQ-UT-00143",
+        "EQ-UT-00144",
+        "EQ-AH-00301",
+        "EQ-AH-00302"
+      ]
+    },
+    {
+      "id": "UT-SLD-0301",
+      "revision": "B",
+      "assetIds": [
+        "EQ-UT-00142",
+        "EQ-UT-00143",
+        "EQ-UT-00144",
+        "EQ-CH-00201"
+      ]
+    }
+  ],
+  "metrics": [
+    {
+      "metric": "vibration",
+      "unit": "mm/s",
+      "assetIds": [
+        "EQ-UT-00142",
+        "EQ-UT-00143",
+        "EQ-UT-00144"
+      ]
+    },
+    {
+      "metric": "outlet_temperature",
+      "unit": "°C",
+      "assetIds": [
+        "EQ-CH-00201",
+        "EQ-CH-00202"
+      ]
+    },
+    {
+      "metric": "filter_pressure",
+      "unit": "Pa",
+      "assetIds": [
+        "EQ-AH-00301",
+        "EQ-AH-00302"
+      ]
+    },
+    {
+      "metric": "level",
+      "unit": "%",
+      "assetIds": [
+        "EQ-TK-00401"
+      ]
+    }
+  ],
+  "pipelines": [
+    {
+      "id": "PIPE-ASSET-SYNC",
+      "name": "Equipment master snapshot",
+      "kind": "asset",
+      "owner": "master_data",
+      "target": "asset_snapshot",
+      "contract": "2.0.0",
+      "fields": [
+        "assetId",
+        "name",
+        "status",
+        "updatedAt"
+      ],
+      "assetIds": [
+        "EQ-UT-00142",
+        "EQ-UT-00143",
+        "EQ-UT-00144",
+        "EQ-CH-00201",
+        "EQ-CH-00202",
+        "EQ-AH-00301",
+        "EQ-AH-00302",
+        "EQ-TK-00401"
+      ],
+      "sourceLabel": "Versioned master export",
+      "targetLabel": "Equipment identity cache",
+      "description": "Read the governed source; never change its standards.",
+      "cadence": "Manual simulation",
+      "mapping": [
+        [
+          "assetId",
+          "assetId"
+        ],
+        [
+          "status",
+          "source lifecycle"
+        ],
+        [
+          "updatedAt",
+          "eventAt"
+        ]
+      ]
+    },
+    {
+      "id": "PIPE-QUALITY",
+      "name": "Quality observation ingestion",
+      "kind": "quality",
+      "owner": "synthetic_sensor",
+      "target": "quality_observations",
+      "contract": "1.0.0",
+      "fields": [
+        "asset_id",
+        "observed_at",
+        "metric",
+        "reading",
+        "unit"
+      ],
+      "assetIds": [
+        "EQ-UT-00142",
+        "EQ-UT-00143",
+        "EQ-UT-00144",
+        "EQ-CH-00201",
+        "EQ-CH-00202",
+        "EQ-AH-00301",
+        "EQ-AH-00302",
+        "EQ-TK-00401"
+      ],
+      "sourceLabel": "Synthetic sensor batch",
+      "targetLabel": "Normalized observations",
+      "description": "Normalize units and quarantine unmapped records.",
+      "cadence": "Manual simulation",
+      "mapping": [
+        [
+          "asset_id",
+          "assetId"
+        ],
+        [
+          "observed_at",
+          "eventAt"
+        ],
+        [
+          "reading",
+          "value"
+        ],
+        [
+          "um/s",
+          "mm/s ÷ 1,000"
+        ]
+      ]
+    },
+    {
+      "id": "PIPE-DRAWING-INDEX",
+      "name": "Drawing relationship index",
+      "kind": "drawing",
+      "owner": "engineering_drawing",
+      "target": "drawing_links",
+      "contract": "1.0.0",
+      "fields": [
+        "drawingId",
+        "assetId",
+        "revision",
+        "status",
+        "publishedAt"
+      ],
+      "assetIds": [
+        "EQ-UT-00142",
+        "EQ-UT-00143",
+        "EQ-UT-00144",
+        "EQ-CH-00201",
+        "EQ-CH-00202",
+        "EQ-AH-00301",
+        "EQ-AH-00302",
+        "EQ-TK-00401"
+      ],
+      "sourceLabel": "Released drawing snapshot",
+      "targetLabel": "Equipment–drawing index",
+      "description": "Index released revisions with canonical equipment IDs.",
+      "cadence": "Manual simulation",
+      "mapping": [
+        [
+          "drawingId + assetId",
+          "relationship key"
+        ],
+        [
+          "revision",
+          "pinned released revision"
+        ],
+        [
+          "publishedAt",
+          "eventAt"
+        ]
+      ]
+    },
+    {
+      "id": "PIPE-DELIVERY-INDEX",
+      "name": "Accepted handover index",
+      "kind": "delivery",
+      "owner": "document_delivery",
+      "target": "handover_releases",
+      "contract": "1.0.0",
+      "fields": [
+        "releaseId",
+        "assetId",
+        "packageId",
+        "status",
+        "documents",
+        "acceptedAt"
+      ],
+      "assetIds": [
+        "EQ-CH-00201"
+      ],
+      "sourceLabel": "Accepted release manifest",
+      "targetLabel": "Handover reference index",
+      "description": "Consume accepted references without approving source documents.",
+      "cadence": "Manual simulation",
+      "mapping": [
+        [
+          "releaseId",
+          "release identity"
+        ],
+        [
+          "documents[].sha256",
+          "content-hash reference"
+        ],
+        [
+          "acceptedAt",
+          "eventAt"
+        ]
+      ]
+    }
+  ],
+  "inputs": {
+    "PIPE-ASSET-SYNC": [
+      {
+        "assetId": "EQ-UT-00142",
+        "name": "Chilled water pump A",
+        "status": "active",
+        "updatedAt": "2026-10-30T00:00:00Z"
+      },
+      {
+        "assetId": "EQ-UT-00143",
+        "name": "Chilled water pump B",
+        "status": "active",
+        "updatedAt": "2026-10-30T00:00:00Z"
+      },
+      {
+        "assetId": "EQ-UT-00144",
+        "name": "Chilled water pump C",
+        "status": "active",
+        "updatedAt": "2026-10-30T00:00:00Z"
+      },
+      {
+        "assetId": "EQ-CH-00201",
+        "name": "Chiller unit A",
+        "status": "active",
+        "updatedAt": "2026-10-30T00:00:00Z"
+      },
+      {
+        "assetId": "EQ-CH-00202",
+        "name": "Chiller unit B",
+        "status": "inactive",
+        "updatedAt": "2026-10-30T00:00:00Z"
+      },
+      {
+        "assetId": "EQ-AH-00301",
+        "name": "Air handling unit A",
+        "status": "active",
+        "updatedAt": "2026-10-30T00:00:00Z"
+      },
+      {
+        "assetId": "EQ-AH-00302",
+        "name": "Air handling unit B",
+        "status": "expired",
+        "updatedAt": "2026-10-30T00:00:00Z"
+      },
+      {
+        "assetId": "EQ-TK-00401",
+        "name": "Buffer tank",
+        "status": "set-up",
+        "updatedAt": "2026-10-30T00:00:00Z"
+      }
+    ],
+    "PIPE-QUALITY": [
+      {
+        "asset_id": "EQ-UT-00142",
+        "observed_at": "2026-10-30T00:00:00Z",
+        "metric": "vibration",
+        "reading": 4.8,
+        "unit": "mm/s"
+      },
+      {
+        "asset_id": "EQ-UT-00143",
+        "observed_at": "2026-10-30T00:00:00Z",
+        "metric": "vibration",
+        "reading": 2100,
+        "unit": "um/s"
+      },
+      {
+        "asset_id": "EQ-UT-00144",
+        "observed_at": "2026-10-30T00:00:00Z",
+        "metric": "vibration",
+        "reading": 1.8,
+        "unit": "mm/s"
+      },
+      {
+        "asset_id": "EQ-CH-00201",
+        "observed_at": "2026-10-30T00:00:00Z",
+        "metric": "outlet_temperature",
+        "reading": 7.2,
+        "unit": "°C"
+      },
+      {
+        "asset_id": "EQ-CH-00202",
+        "observed_at": "2026-10-30T00:00:00Z",
+        "metric": "outlet_temperature",
+        "reading": 7.5,
+        "unit": "°C"
+      },
+      {
+        "asset_id": "EQ-AH-00301",
+        "observed_at": "2026-10-30T00:00:00Z",
+        "metric": "filter_pressure",
+        "reading": 310,
+        "unit": "Pa"
+      },
+      {
+        "asset_id": "EQ-AH-00302",
+        "observed_at": "2026-10-30T00:00:00Z",
+        "metric": "filter_pressure",
+        "reading": 185,
+        "unit": "Pa"
+      },
+      {
+        "asset_id": "EQ-TK-00401",
+        "observed_at": "2026-10-30T00:00:00Z",
+        "metric": "level",
+        "reading": 68,
+        "unit": "%"
+      },
+      {
+        "asset_id": "EQ-UT-00142",
+        "observed_at": "2026-10-30T00:00:00Z",
+        "metric": "vibration",
+        "reading": 4.8,
+        "unit": "mm/s"
+      },
+      {
+        "asset_id": "UNKNOWN-PUMP",
+        "observed_at": "2026-10-30T00:01:00Z",
+        "metric": "vibration",
+        "reading": 2.3,
+        "unit": "mm/s"
+      },
+      {
+        "asset_id": "EQ-UT-00142",
+        "observed_at": "2026-10-30T00:01:00Z",
+        "metric": "vibration",
+        "reading": 4.7,
+        "unit": "unknown-unit"
+      }
+    ],
+    "PIPE-DRAWING-INDEX": [
+      {
+        "drawingId": "UT-PID-0101",
+        "assetId": "EQ-CH-00201",
+        "revision": "C",
+        "status": "Released",
+        "publishedAt": "2026-10-30T00:00:00Z"
+      },
+      {
+        "drawingId": "UT-PID-0101",
+        "assetId": "EQ-CH-00202",
+        "revision": "C",
+        "status": "Released",
+        "publishedAt": "2026-10-30T00:00:00Z"
+      },
+      {
+        "drawingId": "UT-PID-0101",
+        "assetId": "EQ-TK-00401",
+        "revision": "C",
+        "status": "Released",
+        "publishedAt": "2026-10-30T00:00:00Z"
+      },
+      {
+        "drawingId": "UT-PID-0102",
+        "assetId": "EQ-UT-00142",
+        "revision": "C",
+        "status": "Released",
+        "publishedAt": "2026-10-30T00:00:00Z"
+      },
+      {
+        "drawingId": "UT-PID-0102",
+        "assetId": "EQ-UT-00143",
+        "revision": "C",
+        "status": "Released",
+        "publishedAt": "2026-10-30T00:00:00Z"
+      },
+      {
+        "drawingId": "UT-PID-0102",
+        "assetId": "EQ-UT-00144",
+        "revision": "C",
+        "status": "Released",
+        "publishedAt": "2026-10-30T00:00:00Z"
+      },
+      {
+        "drawingId": "UT-PID-0103",
+        "assetId": "EQ-AH-00301",
+        "revision": "B",
+        "status": "Released",
+        "publishedAt": "2026-10-30T00:00:00Z"
+      },
+      {
+        "drawingId": "UT-PID-0103",
+        "assetId": "EQ-AH-00302",
+        "revision": "B",
+        "status": "Released",
+        "publishedAt": "2026-10-30T00:00:00Z"
+      },
+      {
+        "drawingId": "UT-GA-0201",
+        "assetId": "EQ-CH-00201",
+        "revision": "A",
+        "status": "Released",
+        "publishedAt": "2026-10-30T00:00:00Z"
+      },
+      {
+        "drawingId": "UT-GA-0201",
+        "assetId": "EQ-CH-00202",
+        "revision": "A",
+        "status": "Released",
+        "publishedAt": "2026-10-30T00:00:00Z"
+      },
+      {
+        "drawingId": "UT-GA-0201",
+        "assetId": "EQ-TK-00401",
+        "revision": "A",
+        "status": "Released",
+        "publishedAt": "2026-10-30T00:00:00Z"
+      },
+      {
+        "drawingId": "UT-GA-0201",
+        "assetId": "EQ-UT-00142",
+        "revision": "A",
+        "status": "Released",
+        "publishedAt": "2026-10-30T00:00:00Z"
+      },
+      {
+        "drawingId": "UT-GA-0201",
+        "assetId": "EQ-UT-00143",
+        "revision": "A",
+        "status": "Released",
+        "publishedAt": "2026-10-30T00:00:00Z"
+      },
+      {
+        "drawingId": "UT-GA-0201",
+        "assetId": "EQ-UT-00144",
+        "revision": "A",
+        "status": "Released",
+        "publishedAt": "2026-10-30T00:00:00Z"
+      },
+      {
+        "drawingId": "UT-GA-0201",
+        "assetId": "EQ-AH-00301",
+        "revision": "A",
+        "status": "Released",
+        "publishedAt": "2026-10-30T00:00:00Z"
+      },
+      {
+        "drawingId": "UT-GA-0201",
+        "assetId": "EQ-AH-00302",
+        "revision": "A",
+        "status": "Released",
+        "publishedAt": "2026-10-30T00:00:00Z"
+      },
+      {
+        "drawingId": "UT-SLD-0301",
+        "assetId": "EQ-UT-00142",
+        "revision": "B",
+        "status": "Released",
+        "publishedAt": "2026-10-30T00:00:00Z"
+      },
+      {
+        "drawingId": "UT-SLD-0301",
+        "assetId": "EQ-UT-00143",
+        "revision": "B",
+        "status": "Released",
+        "publishedAt": "2026-10-30T00:00:00Z"
+      },
+      {
+        "drawingId": "UT-SLD-0301",
+        "assetId": "EQ-UT-00144",
+        "revision": "B",
+        "status": "Released",
+        "publishedAt": "2026-10-30T00:00:00Z"
+      },
+      {
+        "drawingId": "UT-SLD-0301",
+        "assetId": "EQ-CH-00201",
+        "revision": "B",
+        "status": "Released",
+        "publishedAt": "2026-10-30T00:00:00Z"
+      }
+    ],
+    "PIPE-DELIVERY-INDEX": [
+      {
+        "releaseId": "REL-0002-01",
+        "assetId": "EQ-CH-00201",
+        "packageId": "DEL-0002",
+        "status": "Accepted",
+        "documents": [
+          {
+            "id": "UT-PID-0101",
+            "revision": "C",
+            "sha256": "1c17fee8d4d902052103f0b54e40e3d259a32d1ff65690d0df5635c7a4c49406"
+          },
+          {
+            "id": "SPEC-EQ-CH-00201",
+            "revision": "A",
+            "sha256": "08b9c1cc2697292e26c7b7b6983d194d99822bb8a068355e91f278144fe46528"
+          },
+          {
+            "id": "TEST-EQ-CH-00201",
+            "revision": "A",
+            "sha256": "37651d4c381ed234e4e7e5b99f2309acd73dde994f996ead8c7a8949be8d20f1"
+          },
+          {
+            "id": "MANUAL-EQ-CH-00201",
+            "revision": "A",
+            "sha256": "aaf043b5730dbf487ee8d727fbd7209fc63cf6a08909ae7a4480113219b304ee"
+          }
+        ],
+        "acceptedAt": "2026-10-22T09:00:00Z"
+      }
+    ]
+  },
+  "provenance": {
+    "master_data": "2dc41179b8d755b61d7512ace60076aad699210b",
+    "engineering_drawing": "13d575593f7edb7eb5523bfa4dffa906e9da1bf1",
+    "document_delivery": "9a3cce40f2bf81437d4d85bb05369a2a515168a7"
+  }
+}
