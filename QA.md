@@ -11,5 +11,9 @@
   moves the event checkpoint to the corrected event and links the original/recovery runs.
 - Browser: lineage shows the real current dataset and companion links by canonical ID.
 - Root publication is regenerated and compared against committed output by CI.
+- Three topology tests verify row counts, rejection branches, failed/skipped edges,
+  retained targets, historical selection, recovery, pause and equipment filters.
+- Browser: selecting the failed drawing Normalize node selects RUN-00007 and exposes
+  its missing drawingId contract failure with Records / Execution trace actions.
 - No physical-device, production-connector, scheduler, authentication, tamper-resistant
   logging or live telemetry verification is claimed.

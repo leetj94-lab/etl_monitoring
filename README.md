@@ -23,6 +23,11 @@ Two quarantined observation rows and two failed batches demonstrate recovery.
 
 ## What works
 
+- Interactive SVG node/edge topology for all four pipelines: source/extract → normalize
+  → validate → load → target, plus rejection branches. Colors and arrows derive from
+  execution evidence; skipped stages show zero processed rows and retained targets
+  preserve their existing counts. Select nodes to inspect records, logs or targets.
+  Zoom, pan, Fit and canonical-equipment filters support graph exploration.
 - Pipeline register, execution history, stage status, actual record counts, run search,
   status filtering and canonical equipment-context filtering.
 - Real source-to-target field mapping, physical-unit normalization and row validation.
@@ -90,5 +95,5 @@ the underlying document bytes are not rehashed by this ETL app. Use document_del
 to inspect the content-hash checks on its own files.
 
 The backend extension plan and pinned source provenance are in docs/INTEGRATION.md.
-Fourteen domain tests cover the operational interlocks; browser checks are in QA.md.
+Seventeen tests cover operational interlocks and graph evidence; browser checks are in QA.md.
 MIT for original code and synthetic fixtures.
