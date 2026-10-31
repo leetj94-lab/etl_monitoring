@@ -1,7 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {SYSTEMS,ROUTES,initialNetwork,dispatchNetwork,retryNetwork,networkView,loadNetwork,saveNetwork} from '../src/network.js';
+import {SYSTEMS,ROUTES,initialNetwork,dispatchNetwork,retryNetwork,completeNetwork,faultNodeFor,networkView,loadNetwork,saveNetwork} from '../src/network.js';
 const registry=JSON.parse(readFileSync(new URL('../fixtures/network-registry.json',import.meta.url),'utf8')),catalog=JSON.parse(readFileSync(new URL('../fixtures/catalog.json',import.meta.url),'utf8')),reason='Inspect source ownership and typed consumer deliveries.';
 const initial=()=>initialNetwork(registry,catalog);
 test('system topology has typed one-to-many and many-to-one relationships',()=>{assert.equal(SYSTEMS.length,13);assert.equal(ROUTES.length,19);for(const r of ROUTES){assert.ok(SYSTEMS.some(n=>n.id===r.from));assert.ok(SYSTEMS.some(n=>n.id===r.to));}assert.equal(ROUTES.filter(r=>r.from==='extraction').length,4);assert.equal(ROUTES.filter(r=>r.from==='master').length,5);assert.ok(ROUTES.filter(r=>r.to==='twin').length>=4);});
@@ -12,3 +12,35 @@ test('retry preserves source evidence and repairs only a selected consumer deliv
 test('source event identities are idempotent and incompatible reuse is rejected',()=>{const s=initial(),x=dispatchNetwork(s,registry,catalog,{profile:'master',assetId:'EQ-UT-00142',eventId:'EXTERNAL-001',reason});const again=dispatchNetwork(x.state,registry,catalog,{profile:'master',assetId:'EQ-UT-00142',eventId:'EXTERNAL-001',reason});assert.equal(again.created,0);assert.equal(again.state.messages.length,x.state.messages.length);assert.throws(()=>dispatchNetwork(x.state,registry,catalog,{profile:'handover',assetId:'EQ-UT-00142',eventId:'EXTERNAL-001',reason}));});
 test('role, canonical identity, reason and non-repairable source-error gates are enforced',()=>{const s=initial();assert.throws(()=>dispatchNetwork(s,registry,catalog,{profile:'master',assetId:'BAD',reason}));assert.throws(()=>dispatchNetwork(s,registry,catalog,{profile:'master',reason},'Observer'));assert.throws(()=>dispatchNetwork(s,registry,catalog,{reason:'short'}));assert.throws(()=>retryNetwork(s,registry,catalog,s.messages.find(m=>m.status==='Delivered').id,{reason}));const invalid=s.messages.find(m=>m.routeId==='extraction-quarantine');assert.throws(()=>retryNetwork(s,registry,catalog,invalid.id,{reason,recovered:true}),/source/);});
 test('isolated network storage preserves prior run data and recovers invalid state',()=>{const s=initial();let raw;const storage={getItem:()=>raw,setItem:(k,v)=>{assert.equal(k,'tj.etl.system-network.v1');raw=v;}};assert.equal(saveNetwork(storage,s),true);assert.deepEqual(loadNetwork(storage,s),s);raw='{bad';assert.deepEqual(loadNetwork(storage,s),s);assert.equal(saveNetwork({setItem:()=>{throw Error();}},s),false);});
+
+test('pending delivery has no inbox write, completion is guarded and preserves queued evidence',()=>{
+ const s=initial(),x=dispatchNetwork(s,registry,catalog,{profile:'handover',assetId:'EQ-UT-00143',queued:true,reason});
+ const pending=x.state.messages.find(m=>m.eventId===x.eventId&&m.routeId==='delivery-archive'),snapshot=structuredClone(pending);
+ assert.equal(pending.status,'Processing');assert.equal(x.state.inboxes[x.eventId+':delivery-archive'],undefined);
+ const held=x.state.messages.find(m=>m.eventId===x.eventId&&m.routeId==='extract-master');assert.equal(held.status,'Held');
+ assert.throws(()=>completeNetwork(x.state,registry,catalog,held.id,{reason}),/in-progress/);
+ assert.throws(()=>completeNetwork(x.state,registry,catalog,pending.id,{reason},'Observer'),/Operator/);
+ assert.throws(()=>completeNetwork(x.state,registry,catalog,pending.id,{reason:'short'}));
+ const done=completeNetwork(x.state,registry,catalog,pending.id,{reason});assert.equal(done.message.status,'Delivered');
+ assert.equal(done.message.parentId,pending.id);assert.deepEqual(x.state.messages.find(m=>m.id===pending.id),snapshot);
+ assert.equal(done.state.inboxes[x.eventId+':delivery-archive'].messageId,done.message.id);
+ assert.equal(networkView(done.state,{assetId:pending.assetId}).edges.find(e=>e.id===pending.routeId).status,'Delivered');
+ assert.throws(()=>completeNetwork(done.state,registry,catalog,pending.id,{reason}),/unfinished/);
+});
+test('processing completion evaluates actual rejection gates and never masks an unresolved error',()=>{
+ const x=dispatchNetwork(initial(),registry,catalog,{profile:'master',assetId:'EQ-UT-00142',queued:true,reason}),pending=x.state.messages.find(m=>m.eventId===x.eventId&&m.routeId==='master-quality');
+ assert.equal(pending.status,'Processing');assert.equal(networkView(x.state,{assetId:pending.assetId}).edges.find(e=>e.id==='master-quality').status,'Quarantined');
+ const done=completeNetwork(x.state,registry,catalog,pending.id,{reason});assert.equal(done.message.status,'Quarantined');assert.equal(done.message.code,'PROFILE_VERSION_MISMATCH');
+ assert.equal(done.state.inboxes[x.eventId+':master-quality'],undefined);
+ const g=networkView(x.state,{status:'Processing'});assert.ok(g.edges.length>0);assert.ok(g.edges.every(e=>e.status==='Processing'));
+ let raw;const storage={setItem:(k,v)=>{raw=v;},getItem:()=>raw};saveNetwork(storage,x.state);assert.deepEqual(loadNetwork(storage,initial()),x.state);
+});
+test('fault indicators identify the actual detector and clear after scoped recovery',()=>{
+ const s=initial(),edges=networkView(s).edges,get=id=>edges.find(e=>e.id===id);
+ assert.equal(faultNodeFor(get('master-work')),'work');assert.equal(faultNodeFor(get('master-quality')),'quality');
+ assert.equal(faultNodeFor(get('extraction-quarantine')),'extraction');assert.equal(faultNodeFor(get('quality-quarantine')),'quality');
+ assert.equal(faultNodeFor(get('extract-master')),null);assert.equal(faultNodeFor(get('delivery-archive')),null);
+ assert.equal(get('delivery-archive').status,'Processing');
+ const parent=s.messages.find(m=>m.routeId==='master-quality'),fixed=retryNetwork(s,registry,catalog,parent.id,{recovered:true,reason});
+ assert.equal(faultNodeFor(networkView(fixed.state,{assetId:parent.assetId}).edges.find(e=>e.id==='master-quality')),null);
+});

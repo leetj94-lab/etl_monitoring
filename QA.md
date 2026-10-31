@@ -25,3 +25,11 @@
   its missing drawingId contract failure with Records / Execution trace actions.
 - No physical-device, production-connector, scheduler, authentication, tamper-resistant
   logging or live telemetry verification is claimed.
+
+- Three operational-status tests cover queued inbox isolation, role/reason/completion
+  gates, preserved attempts, completion-time validation, state persistence, fault
+  detector attribution and clearing indicators after equipment-scoped recovery.
+
+- Browser: queued handover shows four visible blue Processing routes and an amber
+  master approval hold. The inspector shows DELIVERY_IN_PROGRESS with no inbox write;
+  Complete sample delivery transitions archive delivery to green and retains its parent.

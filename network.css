@@ -3,3 +3,33 @@
 @media(max-width:1250px){.network-layout{grid-template-columns:minmax(0,1fr) 265px;gap:13px}.network-toolbar h2{font-size:25px}.network-actions .secondary{display:none}.network-inspector{padding:20px 16px}.network-inspector h3{font-size:19px}.network-summary{gap:15px}.network-summary small{margin-left:0}.network-filters{gap:10px}.network-filters label{min-width:100px}.network-filters label:first-child{min-width:155px}.network-canvas-controls>span{display:none}.network-canvas-controls{justify-content:flex-end}.network-preset-bar>span{display:none}#systems-network{height:620px}}
 @media(max-width:950px){.network-layout{grid-template-columns:1fr}.network-inspector{max-height:none}.network-inspector h3{font-size:22px}.network-inspector details pre{max-height:260px}.network-inspector .network-properties{max-width:550px}.network-layout.expanded #systems-network{height:720px}#systems-network{height:650px}.network-node-title{font-size:17px}.network-toolbar p{font-size:11px}}
 @media(max-width:650px){.network-toolbar{align-items:start;gap:15px}.network-toolbar h2{font-size:22px}.network-toolbar .eyebrow{font-size:8px}.network-toolbar p{font-size:11px}.network-actions .primary{font-size:9px;max-width:100px;white-space:normal;padding:8px 9px;line-height:1.8}.network-preset-bar{gap:5px}.network-preset-bar button{font-size:10px;padding:8px 9px}.network-filters{padding:14px}.network-filters label{flex-basis:40%;min-width:0!important}.network-filters select{font-size:10px}.network-filters .network-search{min-width:0;flex-basis:65%}.network-summary{gap:12px}.network-summary span{font-size:9px}.network-summary b{font-size:15px}.network-summary small{font-size:9px}#systems-network{height:540px}.network-canvas-controls{padding:11px;justify-content:flex-start}.network-canvas-controls button{padding:6px 7px;font-size:9px}.network-legend{gap:10px;padding:11px}.network-legend small{font-size:8px}.network-scope{font-size:10px}.topology-view-switch{margin-bottom:20px}.topology-view-switch button{font-size:10px;padding:8px 13px}.network-layout.expanded #systems-network{height:650px}}
+
+/* Operational semantics: green accepted, red failure/rejection, blue processing. */
+.network-edge-line{opacity:.86;stroke-width:2.8}
+.network-edge.failed .network-edge-line,.network-edge.quarantined .network-edge-line{stroke-width:3.6;opacity:1;stroke-dasharray:7 4}
+.network-edge.processing .network-edge-line{stroke-width:3.2;stroke-dasharray:9 5;opacity:1}
+#systems-network.animated .network-edge.processing .network-edge-line{animation:network-progress-flow 1s linear infinite}
+@keyframes network-progress-flow{to{stroke-dashoffset:-28}}
+.network-edge.held .network-edge-line{stroke-dasharray:2 6;opacity:.9}
+.network-packet{filter:drop-shadow(0 0 4px currentColor)}
+.network-node.has-fault .network-node-halo{stroke:#facc15;stroke-opacity:.7;fill:#facc15;fill-opacity:.07;stroke-width:2}
+.network-node.has-fault .network-node-core{stroke:#facc15;stroke-width:2.5}
+.network-alert-triangle{fill:#facc15;stroke:#fff0a3;stroke-width:1.5;filter:drop-shadow(0 0 5px #facc1540)}
+.network-alert-text{fill:#3b2e00;stroke:none;font:700 22px 'DM Sans',sans-serif;pointer-events:none}
+.network-progress-dot{fill:#38bdf8;stroke:#b8edff;stroke-width:1.5}
+.network-progress-text{fill:#082f49;stroke:none;font:700 19px sans-serif;pointer-events:none}
+.network-hold-dot{fill:#fbbf24;stroke:#fef3c7;stroke-width:1.5}
+.network-hold-text{fill:#533600;stroke:none;font:700 14px sans-serif;pointer-events:none}
+.network-fault-key b{display:grid;place-items:center;width:13px;height:13px;background:#facc15;color:#3b2e00;border-radius:2px;font:700 11px sans-serif}
+.network-legend>span{color:#bdd1e2;font-size:10px}.network-legend i{width:9px;height:9px}
+.network-summary .delivery-ok b{color:#07864b}.network-summary .delivery-bad b{color:#dc3545}.network-summary .delivery-progress b{color:#0284c7}.network-summary .delivery-held b{color:#ad7600}
+.network-status.delivered,.network-route-button i.delivered{background:#dcfce7;color:#166534}
+.network-status.failed,.network-status.quarantined,.network-route-button i.failed,.network-route-button i.quarantined{background:#fee2e2;color:#b91c1c}
+.network-status.processing,.network-route-button i.processing{background:#e0f2fe;color:#0369a1}
+.network-status.held,.network-route-button i.held{background:#fef3c7;color:#92400e}
+.network-outcome.failed,.network-outcome.quarantined{background:#fff1f2;border-color:#fecdd3;color:#be123c}
+.network-outcome.processing{background:#eff9ff;border-color:#bae6fd;color:#0369a1}
+.network-outcome.held{background:#fffbeb;border-color:#fde68a;color:#92400e}
+.network-fault-location{display:flex;flex-direction:column;gap:8px;background:#fffbeb;border:1px solid #facc15;border-left-width:4px;border-radius:5px;padding:12px;margin:16px 0;color:#854d0e;font-size:11px}
+.network-fault-location strong{font-size:14px}.network-fault-location span{font:9px 'IBM Plex Mono',monospace;overflow-wrap:anywhere}
+@media(prefers-reduced-motion:reduce){#systems-network.animated .network-edge.processing .network-edge-line{animation:none}}

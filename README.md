@@ -123,3 +123,14 @@ The backend extension plan and pinned source provenance are in docs/INTEGRATION.
 Twenty-five tests cover operational interlocks, graph evidence and system-message
 fan-out/replay/filtering; browser checks are in QA.md.
 MIT for original code and synthetic fixtures.
+
+## Operational graph status
+
+Green means accepted, red means failed or rejected, blue means in progress, amber
+means source approval pending and gray means no matching traffic. Yellow exclamation
+triangles mark the actual detector: extraction for unmapped drawing objects, quality
+for unit/profile validation, and the receiving work service for connector timeouts.
+Selecting a red relationship shows its fault location and evidence. Approval holds
+are not failures. Pending delivery never writes an inbox; use Complete sample delivery
+to evaluate it. Source-event simulation supports immediate or manually advanced
+processing, preserving the queued parent and result. Existing local history is retained.
