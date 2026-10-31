@@ -11,6 +11,14 @@
   moves the event checkpoint to the corrected event and links the original/recovery runs.
 - Browser: lineage shows the real current dataset and companion links by canonical ID.
 - Root publication is regenerated and compared against committed output by CI.
+- Eight system-network tests verify 13-node/19-edge topology, typed handover fan-out,
+  master ownership gates, source profile values, directional/filter semantics, replay
+  evidence, unresolved-route health, event idempotency and isolated persistence.
+- Browser: Master distribution shows five downstream consumers. Selecting Published
+  control limits reveals the actual JSON and PROFILE_VERSION_MISMATCH. Guarded replay
+  uses revision 1, records a new Delivered attempt and links the original message.
+- Browser: Simulate handover event creates six route messages with master review held.
+  The source preset/equipment filter follows the event. Execution-stage view remains available.
 - Three topology tests verify row counts, rejection branches, failed/skipped edges,
   retained targets, historical selection, recovery, pause and equipment filters.
 - Browser: selecting the failed drawing Normalize node selects RUN-00007 and exposes

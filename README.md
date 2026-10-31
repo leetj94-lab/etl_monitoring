@@ -23,6 +23,31 @@ Two quarantined observation rows and two failed batches demonstrate recovery.
 
 ## What works
 
+- **Systems network** is the default view: a knowledge-graph-style integration map
+  with 13 nodes and 19 directed, typed relationships. Document extraction fans out to
+  master candidates, SVG/title/object references and twin anchors; the master snapshot
+  distributes maintenance profiles, quality limits, work constraints and identity data.
+- Presets focus the entire ecosystem, handover fan-out, master distribution or delivery
+  exceptions. Filter by source neighborhood (1–3 hops), upstream/downstream direction,
+  payload category, delivery outcome, equipment or relationship search. Nodes can be
+  dragged; canvas supports pan, zoom, Fit, layout reset and expansion.
+- Select nodes to inspect dependencies/data products or select edges to inspect the
+  actual sample payload, source event, recipient, outcome and message attempt history.
+  Source-event simulation generates typed messages in browser-local consumer inboxes.
+  Animated particles replay sample paths; animation can be paused and respects reduced motion.
+- Consumer timeout and stale published-profile examples support guarded per-message
+  replay. Successful recovery preserves its parent evidence. Held master candidates
+  cannot bypass source Admin review. Source malformed-object/unit examples remain
+  quarantined until corrected in their owner systems.
+- Route health includes unresolved matching deliveries, so a newer success does not
+  hide an older failure for another equipment. Source event IDs are idempotent; reused
+  event identities with conflicting profile/equipment are rejected.
+- Maintenance, quality, work, analytics and archive nodes are **concept consumers**;
+  they do not imply new deployed services or cross-app writes. Master-sourced payload
+  values come from fixtures/network-registry.json, pinned to master_data commit
+  111343298226565f8a60e0e848a9e732960915fb. Network state uses a separate localStorage key
+  so prior pipeline execution history remains intact.
+- **Execution stages** retains the prior operational view and related-run navigation.
 - Interactive SVG node/edge topology for all four pipelines: source/extract → normalize
   → validate → load → target, plus rejection branches. Colors and arrows derive from
   execution evidence; skipped stages show zero processed rows and retained targets
@@ -95,5 +120,6 @@ the underlying document bytes are not rehashed by this ETL app. Use document_del
 to inspect the content-hash checks on its own files.
 
 The backend extension plan and pinned source provenance are in docs/INTEGRATION.md.
-Seventeen tests cover operational interlocks and graph evidence; browser checks are in QA.md.
+Twenty-five tests cover operational interlocks, graph evidence and system-message
+fan-out/replay/filtering; browser checks are in QA.md.
 MIT for original code and synthetic fixtures.

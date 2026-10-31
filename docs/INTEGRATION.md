@@ -53,3 +53,28 @@ approval workflows authoritative. Use an outbox/event bus for MasterUpdated,
 DrawingReleased and HandoverAccepted events, rather than overwriting source policy.
 
 These backend capabilities are a roadmap, not claimed behavior of this static sample.
+
+## Many-to-many systems network
+
+The default Systems network adds explicit directed topics across delivery, extraction,
+master data, drawings, the twin and concept maintenance/quality/work/analytics/archive
+consumers. The source source-of-truth is unchanged: extracted asset candidates stay
+Held for master Admin review; staging a drawing reference does not release it, and
+twin anchors do not activate equipment. Published maintenance/quality profiles come
+from the pinned master registry, not ETL-authored policy.
+
+fixtures/network-registry.json contains synthetic identity/lifecycle/profile data from
+master_data commit 111343298226565f8a60e0e848a9e732960915fb. A handover event routes proposed
+metadata and real bundled SVG/specification URLs; no file bytes are remotely uploaded.
+Master events represent an already-published pinned export. Concept consumer inboxes
+are browser-local JSON records with event/message/route IDs. They are not network calls.
+
+Network source events, per-consumer replay history and inboxes are stored separately
+under tj.etl.system-network.v1. Pipeline runs retain their original persistence key.
+The view URL uses view=systems or view=execution; existing explicit pipeline/run deep
+links still open execution detail. Equipment context is preserved on owner links and
+related-run navigation. Layout/filter choices are transient UI state.
+
+Route health considers unresolved deliveries within the equipment filter. Retrying a
+timeout/profile mismatch creates a new attempt; master review holds are not retryable.
+Playback animation represents recorded synthetic paths, not live remote activity.

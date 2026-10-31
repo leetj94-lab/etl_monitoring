@@ -1,0 +1,138 @@
+{
+  "synthetic": true,
+  "source": "master_data",
+  "pinnedCommit": "111343298226565f8a60e0e848a9e732960915fb",
+  "version": 1,
+  "profiles": {
+    "UT": {
+      "id": "STD-UT-001",
+      "revision": 1,
+      "title": "Pump management & maintenance",
+      "parameter": "Vibration upper limit",
+      "controlLimit": 4.5,
+      "controlUnit": "mm/s",
+      "inspectionDays": 14,
+      "serviceMonths": 12,
+      "checklist": "Inspect seals, bearing condition, coupling alignment and connections.",
+      "acceptance": "No visible leakage; guard fitted; acceptance record approved."
+    },
+    "CH": {
+      "id": "STD-CH-001",
+      "revision": 1,
+      "title": "Chiller management & maintenance",
+      "parameter": "Outlet temperature upper limit",
+      "controlLimit": 10,
+      "controlUnit": "°C",
+      "inspectionDays": 30,
+      "serviceMonths": 12,
+      "checklist": "Inspect heat exchanger, water connections, refrigerant circuit and safety controls.",
+      "acceptance": "Pressure test, safety checks and commissioning acceptance complete."
+    },
+    "AH": {
+      "id": "STD-AH-001",
+      "revision": 1,
+      "title": "Air handling management & maintenance",
+      "parameter": "Filter differential pressure limit",
+      "controlLimit": 280,
+      "controlUnit": "Pa",
+      "inspectionDays": 14,
+      "serviceMonths": 6,
+      "checklist": "Inspect filters, belts, bearings, damper function and casing integrity.",
+      "acceptance": "Airflow balance and functional test accepted before activation."
+    },
+    "TK": {
+      "id": "STD-TK-001",
+      "revision": 1,
+      "title": "Tank management & maintenance",
+      "parameter": "High-level setpoint limit",
+      "controlLimit": 90,
+      "controlUnit": "%",
+      "inspectionDays": 30,
+      "serviceMonths": 24,
+      "checklist": "Inspect shell corrosion, supports, level indication, vents and connections.",
+      "acceptance": "Integrity inspection and level-instrument acceptance recorded."
+    }
+  },
+  "assets": [
+    {
+      "id": "EQ-UT-00142",
+      "name": "Chilled water pump A",
+      "status": "active",
+      "assetClass": "UT",
+      "manufacturer": "Aster Industries",
+      "model": "CWP-200",
+      "specificationRef": "SPEC-EQ-UT-00142-C",
+      "registeredStandard": 1
+    },
+    {
+      "id": "EQ-UT-00143",
+      "name": "Chilled water pump B",
+      "status": "active",
+      "assetClass": "UT",
+      "manufacturer": "Nord Engineering",
+      "model": "CWP-200",
+      "specificationRef": "SPEC-EQ-UT-00143-C",
+      "registeredStandard": 1
+    },
+    {
+      "id": "EQ-UT-00144",
+      "name": "Chilled water pump C",
+      "status": "active",
+      "assetClass": "UT",
+      "manufacturer": "Aster Industries",
+      "model": "CWP-160",
+      "specificationRef": "SPEC-EQ-UT-00144-C",
+      "registeredStandard": 1
+    },
+    {
+      "id": "EQ-CH-00201",
+      "name": "Chiller unit A",
+      "status": "active",
+      "assetClass": "CH",
+      "manufacturer": "Aster Industries",
+      "model": "CH-450",
+      "specificationRef": "SPEC-EQ-CH-00201-C",
+      "registeredStandard": 1
+    },
+    {
+      "id": "EQ-CH-00202",
+      "name": "Chiller unit B",
+      "status": "inactive",
+      "assetClass": "CH",
+      "manufacturer": "Nord Engineering",
+      "model": "CH-450",
+      "specificationRef": "SPEC-EQ-CH-00202-C",
+      "registeredStandard": 1
+    },
+    {
+      "id": "EQ-AH-00301",
+      "name": "Air handling unit A",
+      "status": "active",
+      "assetClass": "AH",
+      "manufacturer": "Aster Industries",
+      "model": "AHU-80",
+      "specificationRef": "SPEC-EQ-AH-00301-C",
+      "registeredStandard": 1
+    },
+    {
+      "id": "EQ-AH-00302",
+      "name": "Air handling unit B",
+      "status": "expired",
+      "assetClass": "AH",
+      "manufacturer": "Aster Industries",
+      "model": "AHU-80",
+      "specificationRef": "SPEC-EQ-AH-00302-C",
+      "registeredStandard": 1
+    },
+    {
+      "id": "EQ-TK-00401",
+      "name": "Buffer tank",
+      "status": "set-up",
+      "assetClass": "TK",
+      "manufacturer": "Nord Engineering",
+      "model": "BT-5000",
+      "specificationRef": "SPEC-EQ-TK-00401-C",
+      "registeredStandard": 1
+    }
+  ]
+}
