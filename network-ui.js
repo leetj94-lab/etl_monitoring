@@ -1,5 +1,5 @@
-import {SYSTEMS,ROUTES,TOPICS,initialNetwork,networkView,dispatchNetwork,retryNetwork,loadNetwork,saveNetwork} from './network.js';
-import {esc} from './domain.js';
+import {SYSTEMS,ROUTES,TOPICS,initialNetwork,networkView,dispatchNetwork,retryNetwork,loadNetwork,saveNetwork} from './network.js?v=e01b15dd7ed5';
+import {esc} from './domain.js?v=e01b15dd7ed5';
 const COLORS={Delivered:'#53acb3',Failed:'#d87587',Quarantined:'#d4a259',Held:'#9c89cd',Idle:'#9ab0c5'};
 const TYPE_COLORS={system:'#83b9ef',planned:'#9bbbd6',processor:'#a49bd7',external:'#77bec0'};
 const stamp=s=>new Date(s).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',second:'2-digit'});
